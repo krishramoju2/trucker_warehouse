@@ -1,5 +1,5 @@
 {
-  "name": "trucker_warehouse",
+  "name": "Warehouse Management App",
   "features": {
     "ghcr.io/devcontainers/features/postgres:1": {
       "version": "15",
@@ -7,5 +7,6 @@
       "postgresql password": "postgres",
       "postgresql db": "warehouse_db"
     }
-  }
+  },
+  "postCreateCommand": "psql -U postgres -d warehouse_db -f backend/db/schema.sql"
 }
