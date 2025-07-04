@@ -20,4 +20,3 @@ CREATE TABLE employee_documents (
     form_16_or_it_returns TEXT,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
- 
