@@ -3,20 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <title>All Employees</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
+    }
+
+    .container {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+    }
+
+    .employee-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #ffffff20;
+      backdrop-filter: blur(6px);
+      border: 1px solid #ffffff40;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      width: 250px;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
-  <h2>Employees List</h2>
-  <ul id="empList"></ul>
+  <div class="container">
+    <h2>👥 Employees List</h2>
+    <div class="employee-list" id="empList"></div>
+  </div>
 
   <script>
     fetch('http://localhost:8080/employee')
       .then(res => res.json())
       .then(data => {
-        const ul = document.getElementById('empList');
+        const list = document.getElementById('empList');
         data.forEach(emp => {
-          const li = document.createElement('li');
-          li.textContent = `ID: ${emp.id}, Name: ${emp.name}`;
-          ul.appendChild(li);
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <strong>ID:</strong> ${emp.id}<br>
+            <strong>Name:</strong> ${emp.name}<br>
+            <strong>DOB:</strong> ${emp.date_of_birth}<br>
+            <strong>Contact:</strong> ${emp.contact_number}
+          `;
+          list.appendChild(card);
         });
       });
   </script>
