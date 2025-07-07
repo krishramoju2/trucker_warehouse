@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from backend.routers import stats
 from backend.database import Base, engine
 from backend.routers import employee, documents, auth, files
 from backend.routers import admin  # import admin router here
@@ -28,3 +28,4 @@ app.include_router(employee.router)
 app.include_router(documents.router)
 app.include_router(files.router)
 app.include_router(admin.router)  # included safely
+app.include_router(stats.router)
