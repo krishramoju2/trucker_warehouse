@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Employee Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f0f0f0;
+    }
+    h2 {
+      color: #333;
+    }
+    input {
+      padding: 0.5rem;
+      width: 300px;
+      margin-bottom: 1rem;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #fff;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Search Employees</h2>
+  <input type="text" id="searchInput" placeholder="Search by name..." />
+
+  <ul id="resultsList"></ul>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const resultsList = document.getElementById('resultsList');
+
+    input.addEventListener('input', async () => {
+      const query = input.value.trim();
+      resultsList.innerHTML = '';
+      if (query === '') return;
+
+      const response = await fetch(`http://localhost:8080/employee/search?name=${query}`);
+      const results = await response.json();
+
+      if (results.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = "No matching employees found.";
+        resultsList.appendChild(li);
+        return;
+      }
+
+      results.forEach(emp => {
+        const li = document.createElement('li');
+        li.textContent = `ID: ${emp.id} | Name: ${emp.name} | Contact: ${emp.contact_number}`;
+        resultsList.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>
