@@ -1,11 +1,22 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from backend.database import Base, engine
-from backend.routers import employee, documents, auth, files # new
-from backend.admin import main as admin_main  # optional, if you have admin-specific routes
+from backend.routers import employee, documents, auth, files
+from backend.routers import admin  # import admin router here
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# CORS middleware for frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with specific domain in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
@@ -15,5 +26,5 @@ def root():
 app.include_router(auth.router)
 app.include_router(employee.router)
 app.include_router(documents.router)
-app.include_router(admin_main.router)  # optional
 app.include_router(files.router)
+app.include_router(admin.router)  # included safely
