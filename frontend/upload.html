@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Documents</title>
+</head>
+<body>
+  <h2>Upload Documents</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="number" placeholder="Employee ID" name="empid" required><br>
+    <input type="file" name="resume" required><br>
+    <input type="file" name="educational_certificates" required><br>
+    <input type="file" name="offer_letters" required><br>
+    <input type="file" name="pan_card" required><br>
+    <input type="file" name="aadhar_card" required><br>
+    <input type="file" name="form_16_or_it_returns" required><br>
+    <button type="submit">Upload</button>
+  </form>
+
+  <script>
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData();
+      const empid = form.empid.value;
+
+      formData.append('resume', form.resume.files[0]);
+      formData.append('educational_certificates', form.educational_certificates.files[0]);
+      formData.append('offer_letters', form.offer_letters.files[0]);
+      formData.append('pan_card', form.pan_card.files[0]);
+      formData.append('aadhar_card', form.aadhar_card.files[0]);
+      formData.append('form_16_or_it_returns', form.form_16_or_it_returns.files[0]);
+
+      const res = await fetch(`http://localhost:8080/upload/${empid}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const json = await res.json();
+      alert(JSON.stringify(json));
+    };
+  </script>
+</body>
+</html>
+ 
