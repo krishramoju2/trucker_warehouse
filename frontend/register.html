@@ -85,7 +85,7 @@
         pan_number: form.pan.value,
         aadhar_number: form.aadhar.value
       };
-      const res = await fetch('http://localhost:8080/employee', {
+      const res = await fetch('http://localhost:8000/employee', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
