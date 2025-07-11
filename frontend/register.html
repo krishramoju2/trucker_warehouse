@@ -74,26 +74,44 @@
   </div>
 
   <script>
-    document.getElementById('registerForm').onsubmit = async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        name: form.name.value,
-        date_of_birth: form.dob.value,
-        address: form.address.value,
-        contact_number: form.contact.value,
-        pan_number: form.pan.value,
-        aadhar_number: form.aadhar.value
-      };
+  document.getElementById('registerForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const data = {
+      name: form.name.value,
+      date_of_birth: form.dob.value,
+      address: form.address.value,
+      contact_number: form.contact.value,
+      pan_number: form.pan.value,
+      aadhar_number: form.aadhar.value
+    };
+
+    try {
       const res = await fetch('http://localhost:8000/employee', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        alert(`Error: ${res.status} - ${errorText}`);
+        return;
+      }
+
       const json = await res.json();
-      alert(JSON.stringify(json));
-    };
-  </script>
+      alert("Success! Employee registered.");
+      console.log(json);
+
+    } catch (err) {
+      alert("Failed to connect to server.");
+      console.error(err);
+    }
+  };
+</script>
+
+  
 </body>
 </html>
 
