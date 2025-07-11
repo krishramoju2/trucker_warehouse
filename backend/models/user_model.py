@@ -6,9 +6,8 @@ class UserRole(str, Enum):
     employee = "employee"
 
 class UserCreate(BaseModel):
-    email: EmailStr
-    password: constr(min_length=8, max_length=64, pattern=r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]+$')
-    role: UserRole
+    email: str
+    password: constr(min_length=8, max_length=64, pattern=r"[A-Za-z\d@$!%*?&]{8,}")
 
 class UserLogin(BaseModel):
     email: EmailStr
