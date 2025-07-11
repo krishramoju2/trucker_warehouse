@@ -1,12 +1,14 @@
 from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey, TIMESTAMP, func
 from backend.database import Base
+from datetime import datetime
 
 class EmployeeInfo(Base):
     __tablename__ = "employee_info"
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
-    date_of_birth = Column(Date, nullable=False)
+
+    data.date_of_birth = datetime.strptime(data.date_of_birth, "%Y-%m-%d").date()
     address = Column(Text, nullable=False)
     contact_number = Column(String(15), nullable=False, unique=True)
     pan_number = Column(String(10), nullable=False, unique=True)
