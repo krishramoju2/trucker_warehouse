@@ -50,7 +50,8 @@
   </div>
 
   <script>
-    fetch('http://localhost:8080/employee')
+    fetch('/employee')
+
       .then(res => res.json())
       .then(data => {
         const list = document.getElementById('empList');
