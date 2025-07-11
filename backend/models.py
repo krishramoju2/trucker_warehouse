@@ -9,7 +9,7 @@ class EmployeeInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
 
-    
+    date_of_birth = Column(Date, nullable=False)
     address = Column(Text, nullable=False)
     contact_number = Column(String(15), nullable=False, unique=True)
     pan_number = Column(String(10), nullable=False, unique=True)
