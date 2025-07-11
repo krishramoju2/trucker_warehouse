@@ -3,7 +3,7 @@ from datetime import datetime
 
 class FileCreate(BaseModel):
     filename: constr(min_length=3, max_length=255)
-    file_type: constr(min_length=3, max_length=50, regex=r'^[a-zA-Z0-9_\-/]+$')
+    file_type: constr(min_length=3, max_length=50, pattern=r'^[a-zA-Z0-9_\-/]+$')
     uploaded_by: constr(min_length=2, max_length=100)
 
 class FileOut(BaseModel):
