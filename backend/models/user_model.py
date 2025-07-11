@@ -7,7 +7,7 @@ class UserRole(str, Enum):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: constr(min_length=8, max_length=64, regex=r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]+$')
+    password: constr(min_length=8, max_length=64, pattern=r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]+$')
     role: UserRole
 
 class UserLogin(BaseModel):
