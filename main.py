@@ -4,6 +4,9 @@ from backend.routers import stats
 from backend.database import Base, engine
 from backend.routers import employee, documents, auth, files
 from backend.routers import admin, search 
+from backend.utils.semantic_index import build_index
+build_index()
+
 
 Base.metadata.create_all(bind=engine)
 
