@@ -37,6 +37,6 @@ def create_employee(data: EmployeeCreate, db: Session = Depends(database.get_db)
 def list_employees(db: Session = Depends(database.get_db)):
     return db.query(models.EmployeeInfo).all()
 @router.get("/employee/search")
-def search_employees(name: str = Query(..., min_length=1), db: Session = Depends(database.get_db):
+def search_employees(name: str = Query(..., min_length=1), db: Session = Depends(database.get_db)):
     results = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.name.ilike(f"%{name}%")).all()
     return results
