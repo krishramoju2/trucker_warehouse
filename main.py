@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import stats
 from backend.database import Base, engine
 from backend.routers import employee, documents, auth, files
-from backend.routers import admin  # import admin router here
+from backend.routers import admin, search 
 
 Base.metadata.create_all(bind=engine)
 
