@@ -1,17 +1,23 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import admin
+from backend.routers import admin, employee, documents, auth, files
 
-app = FastAPI(title="Admin Panel API")
+app = FastAPI(
+    title="Warehouse Admin API",
+    version="1.0.0",
+    description="API backend for managing warehouse employee data, documents, and statistics."
+)
 
-# Enable CORS (for frontend calls)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include the admin router
-app.include_router(admin.router)
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])
+app.include_router(employee.router, prefix="/employee", tags=["Employee"])
+app.include_router(documents.router, prefix="/documents", tags=["Documents"])
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(files.router, prefix="/files", tags=["File Uploads"])
