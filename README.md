@@ -1,3 +1,4 @@
+docker-compose up -d
 
 
 sudo apt update && sudo apt install -y libtiff-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libopenjpeg-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk
