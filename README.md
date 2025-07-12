@@ -1,3 +1,13 @@
+sudo service postgresql start
+systemctl start postgresql
+pg_isready
+
+
+python -m uvicorn main:app --reload --port 8000
+
+
+
+
 Here's a complete `README.md` file for your **Warehouse Management System** project with PostgreSQL, FastAPI backend, file upload, admin panel, and frontend integration:
 
 ---
