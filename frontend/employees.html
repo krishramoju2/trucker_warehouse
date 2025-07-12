@@ -5,7 +5,6 @@
   <title>All Employees</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -41,38 +40,60 @@
       color: white;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
+
+    .error {
+      color: #ff8080;
+      font-weight: bold;
+    }
+
+    .loading {
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>👥 Employees List</h2>
-    <div class="employee-list" id="empList"></div>
+    <div id="empList" class="employee-list">
+      <p class="loading">Loading employee data...</p>
+    </div>
   </div>
 
   <script>
-    fetch('/employee')
-  .then(res => res.json())
-  .then(data => {
-    const list = document.getElementById('empList');
-    data.forEach(emp => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <strong>ID:</strong> ${emp.id}<br>
-        <strong>Name:</strong> ${emp.name}<br>
-        <strong>DOB:</strong> ${emp.date_of_birth}<br>
-        <strong>Contact:</strong> ${emp.contact_number}<br>
-        <strong>Address:</strong> ${emp.address}<br>
-        <strong>PAN:</strong> ${emp.pan_number}<br>
-        <strong>Aadhar:</strong> ${emp.aadhar_number}
-      `;
-      list.appendChild(card);
-    });
-  })
-  .catch(err => {
-    document.getElementById('empList').innerHTML = `<p style="color: red;">Failed to load employee data.</p>`;
-    console.error("Error loading employee data:", err);
-  });
+    fetch("/employee")
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then(data => {
+        const list = document.getElementById('empList');
+        list.innerHTML = ""; // Clear loading state
+
+        if (!data || data.length === 0) {
+          list.innerHTML = `<p class="error">No employees found.</p>`;
+          return;
+        }
+
+        data.forEach(emp => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <strong>ID:</strong> ${emp.id}<br>
+            <strong>Name:</strong> ${emp.name}<br>
+            <strong>DOB:</strong> ${emp.date_of_birth}<br>
+            <strong>Contact:</strong> ${emp.contact_number}<br>
+            <strong>Address:</strong> ${emp.address}<br>
+            <strong>PAN:</strong> ${emp.pan_number}<br>
+            <strong>Aadhar:</strong> ${emp.aadhar_number}
+          `;
+          list.appendChild(card);
+        });
+      })
+      .catch(err => {
+        const list = document.getElementById('empList');
+        list.innerHTML = `<p class="error">❌ Failed to load employee data. Please check the server connection.</p>`;
+        console.error("Error loading employee data:", err);
+      });
   </script>
 </body>
 </html>
