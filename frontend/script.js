@@ -1,29 +1,47 @@
-// Example: Submit new employee form
+// 🚀 Submit new employee form
 async function submitEmployeeForm(event) {
   event.preventDefault();
 
+  const submitBtn = document.getElementById("submitEmployeeBtn");
+  submitBtn.disabled = true;
+
   const data = {
-    name: document.getElementById("name").value,
+    name: document.getElementById("name").value.trim(),
     date_of_birth: document.getElementById("dob").value,
-    address: document.getElementById("address").value,
-    contact_number: document.getElementById("contact").value,
-    pan_number: document.getElementById("pan").value,
-    aadhar_number: document.getElementById("aadhar").value,
+    address: document.getElementById("address").value.trim(),
+    contact_number: document.getElementById("contact").value.trim(),
+    pan_number: document.getElementById("pan").value.trim(),
+    aadhar_number: document.getElementById("aadhar").value.trim(),
   };
 
-  const response = await fetch("http://localhost:8080/employee", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await fetch("http://localhost:8080/employee", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-  const result = await response.json();
-  alert("Employee created: " + JSON.stringify(result));
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || "Failed to create employee.");
+    }
+
+    const result = await response.json();
+    alert("✅ Employee created successfully! ID: " + result.id);
+    // Optionally reset form
+    event.target.reset();
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  } finally {
+    submitBtn.disabled = false;
+  }
 }
-
-// Example: Upload files
+// 📁 Upload employee documents
 async function uploadDocuments(event, employeeId) {
   event.preventDefault();
+
+  const uploadBtn = document.getElementById("uploadBtn");
+  uploadBtn.disabled = true;
 
   const formData = new FormData();
   formData.append("resume", document.getElementById("resume").files[0]);
@@ -33,11 +51,24 @@ async function uploadDocuments(event, employeeId) {
   formData.append("aadhar_card", document.getElementById("aadhar_card").files[0]);
   formData.append("form_16_or_it_returns", document.getElementById("form16").files[0]);
 
-  const response = await fetch(`http://localhost:8080/upload/${employeeId}`, {
-    method: "POST",
-    body: formData,
-  });
+  try {
+    const response = await fetch(`http://localhost:8080/files/upload/${employeeId}`, {
+      method: "POST",
+      body: formData,
+    });
 
-  const result = await response.json();
-  alert("Documents uploaded: " + JSON.stringify(result));
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || "Failed to upload documents.");
+    }
+
+    const result = await response.json();
+    alert("📦 Documents uploaded successfully!");
+    // Optionally reset form
+    event.target.reset();
+  } catch (err) {
+    alert("❌ Error uploading files: " + err.message);
+  } finally {
+    uploadBtn.disabled = false;
+  }
 }
