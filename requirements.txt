@@ -7,3 +7,5 @@ sqlalchemy
 psycopg2-binary
 python-multipart
 clamd
+sentence-transformers
+faiss-cpu
