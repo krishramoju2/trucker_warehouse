@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from backend.utils.semantic_index import semantic_search
 from backend.database import SessionLocal
-from backend.models import EmployeeInfo
+from backend.schema_models import EmployeeInfo
 
 router = APIRouter()
 
