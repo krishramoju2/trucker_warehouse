@@ -15,5 +15,5 @@ class FileOut(BaseModel):
     uploaded_by: constr(min_length=2, max_length=100)
     version: int = Field(ge=1)
 
-    class Config:
-        orm_mode = True
+class Config:
+    from_attributes = True
