@@ -3,6 +3,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from backend.database import SessionLocal
 from backend.models import audit_log, file_model, user_model 
+from backend.schema_models import EmployeeInfo
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 index = faiss.IndexFlatL2(384)  # embedding size for the model
