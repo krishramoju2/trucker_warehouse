@@ -3,15 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.database import Base, engine
 from backend.routers import auth, employee, documents, files, admin, stats, search
-from backend.utils.semantic_index import build_index
+import os
 
-# Optional: Only build semantic index if needed (e.g., for search)
-print("🔍 Building semantic index...")
-build_index()
-
-# Create database tables from models
-print("🗃️ Creating database tables...")
-Base.metadata.create_all(bind=engine)
+# Optional: Avoid crashing build on Vercel/production when DB not ready
+try:
+    print("🗃️ Creating database tables...")
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"⚠️ Could not create tables: {e}")
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -20,21 +19,21 @@ app = FastAPI(
     description="API for managing warehouse employee records, documents, search, and stats."
 )
 
-# Enable CORS
+# Enable CORS (for frontend access)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to specific origins for production
+    allow_origins=["*"],  # Change to your frontend domain in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Root health-check route
+# Root health-check endpoint
 @app.get("/")
 def root():
     return {"message": "✅ Warehouse API running"}
 
-# Include all routers with proper tags and prefixes
+# Include routers
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(employee.router, prefix="/employee", tags=["Employee"])
 app.include_router(documents.router, prefix="/documents", tags=["Documents"])
