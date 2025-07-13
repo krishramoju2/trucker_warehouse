@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import datetime
-import schema_models
+from schema_models import EmployeeInfo 
 from backend import database, models
 
 router = APIRouter()
@@ -23,7 +23,7 @@ class EmployeeUpdate(BaseModel):
     pan_number: str | None = None
     aadhar_number: str | None = None
 
-def serialize_employee(emp: schema_models.EmployeeInfo) -> dict:
+def serialize_employee(emp: EmployeeInfo) -> dict:
     return {
         "id": emp.id,
         "name": emp.name,
@@ -57,14 +57,14 @@ def list_employees(db: Session = Depends(database.get_db)):
 
 @router.get("/{employee_id}", response_model=dict)
 def get_employee(employee_id: int, db: Session = Depends(database.get_db)):
-    emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
+    emp = db.query(EmployeeInfo).filter(EmployeeInfo.id == employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
     return serialize_employee(emp)
 
 @router.put("/{employee_id}", response_model=dict)
 def update_employee(employee_id: int, data: EmployeeUpdate, db: Session = Depends(database.get_db)):
-    emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
+    emp = db.query(EmployeeInfo).filter(EmployeeInfo.id == employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -87,7 +87,7 @@ def update_employee(employee_id: int, data: EmployeeUpdate, db: Session = Depend
 
 @router.delete("/{employee_id}", response_model=dict)
 def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
-    emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
+    emp = db.query(EmployeeInfo).filter(EmployeeInfo.id == employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -97,6 +97,6 @@ def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
 
 @router.get("/search/")
 def search_employees(name: str = Query(..., min_length=1), db: Session = Depends(database.get_db)):
-    results = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.name.ilike(f"%{name}%")).all()
+    results = db.query(EmployeeInfo).filter(EmployeeInfo.name.ilike(f"%{name}%")).all()
     return [serialize_employee(emp) for emp in results]
 
