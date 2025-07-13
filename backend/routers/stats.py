@@ -6,12 +6,12 @@ from typing import Dict # For the response model
 # Assuming these imports are correct based on your project structure
 from backend.database import get_db
 
-# IMPORTANT: Based on your instructions, the SQLAlchemy ORM models
-# EmployeeInfo and EmployeeDocuments are now assumed to be available
-# directly from the 'backend.database' module.
-# If your ORM models are located elsewhere, you MUST adjust these imports
-# to their correct path within your project.
-from backend.database import EmployeeInfo, EmployeeDocuments
+# IMPORTANT: The SQLAlchemy ORM models 'EmployeeInfo' and 'EmployeeDocuments'
+# are NOT imported here, as per your explicit instruction that they cannot
+# be imported from 'backend.database' and no new modules can be introduced.
+# As a result, the functions below that relied on these models will
+# return placeholder data or will need their query logic adjusted
+# once you provide the correct way to access these ORM models.
 
 from backend.models import user_model # This module remains as per your instruction
 
@@ -39,9 +39,13 @@ def get_employee_count(db: Session = Depends(get_db)) -> Dict[str, int]:
     Returns:
         A dictionary containing the count of employees.
     """
-    # Using EmployeeInfo directly, assuming it's imported from backend.database
-    count = db.query(EmployeeInfo).count()
-    return {"count": count}
+    # Cannot query EmployeeInfo as it's not imported.
+    # You need to ensure EmployeeInfo ORM model is accessible for this to work.
+    # Example of how it *would* work if EmployeeInfo was correctly imported:
+    # count = db.query(EmployeeInfo).count()
+    # Returning a placeholder value as the ORM model is unavailable.
+    print("Warning: EmployeeInfo ORM model not accessible. Returning placeholder count.")
+    return {"count": 0}
 
 @router.get(
     "/documents",
@@ -59,6 +63,10 @@ def get_document_count(db: Session = Depends(get_db)) -> Dict[str, int]:
     Returns:
         A dictionary containing the count of documents.
     """
-    # Using EmployeeDocuments directly, assuming it's imported from backend.database
-    count = db.query(EmployeeDocuments).count()
-    return {"count": count}
+    # Cannot query EmployeeDocuments as it's not imported.
+    # You need to ensure EmployeeDocuments ORM model is accessible for this to work.
+    # Example of how it *would* work if EmployeeDocuments was correctly imported:
+    # count = db.query(EmployeeDocuments).count()
+    # Returning a placeholder value as the ORM model is unavailable.
+    print("Warning: EmployeeDocuments ORM model not accessible. Returning placeholder count.")
+    return {"count": 0}
