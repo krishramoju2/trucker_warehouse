@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import datetime
-import database, models
+
+from backend import database, models  # Adjust import to match actual directory structure
 
 router = APIRouter()
 
@@ -54,7 +55,7 @@ def update_employee(employee_id: int, data: EmployeeUpdate, db: Session = Depend
     emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
-    
+
     if data.name is not None:
         emp.name = data.name
     if data.date_of_birth is not None:
@@ -86,4 +87,3 @@ def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
 def search_employees(name: str = Query(..., min_length=1), db: Session = Depends(database.get_db)):
     results = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.name.ilike(f"%{name}%")).all()
     return results
-
