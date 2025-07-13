@@ -5,12 +5,15 @@ from typing import Dict # For the response model
 
 # Assuming these imports are correct based on your project structure
 from backend.database import get_db
-# You need to import your SQLAlchemy models. It's common to have a single 'models' module
-# or import them individually if structured differently.
-# For example, if your models are defined in backend/models/user_model.py and backend/models/employee_model.py
-# you might need to import them like this:
-from backend.models import user_model # This seems to be for UserCreate, UserLogin, not EmployeeInfo or EmployeeDocuments
-from backend.models import employee_model # Assuming your EmployeeInfo and EmployeeDocuments are here
+
+# IMPORTANT: Based on your instructions, the SQLAlchemy ORM models
+# EmployeeInfo and EmployeeDocuments are now assumed to be available
+# directly from the 'backend.database' module.
+# If your ORM models are located elsewhere, you MUST adjust these imports
+# to their correct path within your project.
+from backend.database import EmployeeInfo, EmployeeDocuments
+
+from backend.models import user_model # This module remains as per your instruction
 
 # --- Pydantic Models for Responses ---
 # It's good practice to define Pydantic models for your API responses.
@@ -36,8 +39,8 @@ def get_employee_count(db: Session = Depends(get_db)) -> Dict[str, int]:
     Returns:
         A dictionary containing the count of employees.
     """
-    # Ensure 'employee_model.EmployeeInfo' is the correct path to your SQLAlchemy model
-    count = db.query(employee_model.EmployeeInfo).count()
+    # Using EmployeeInfo directly, assuming it's imported from backend.database
+    count = db.query(EmployeeInfo).count()
     return {"count": count}
 
 @router.get(
@@ -56,6 +59,6 @@ def get_document_count(db: Session = Depends(get_db)) -> Dict[str, int]:
     Returns:
         A dictionary containing the count of documents.
     """
-    # Ensure 'employee_model.EmployeeDocuments' is the correct path to your SQLAlchemy model
-    count = db.query(employee_model.EmployeeDocuments).count()
+    # Using EmployeeDocuments directly, assuming it's imported from backend.database
+    count = db.query(EmployeeDocuments).count()
     return {"count": count}
