@@ -1,13 +1,67 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List
+
+# Assuming these imports are correct based on your project structure
 from backend.utils.semantic_index import semantic_search
 from backend.database import SessionLocal
-from backend.schema_models import EmployeeInfo
+from backend.schema_models import EmployeeInfo # This should be your SQLAlchemy model
+from backend.pydantic_models import EmployeeInfoResponse # You'll likely need a Pydantic model for responses
 
 router = APIRouter()
 
-@router.get("/semantic-search")
-def semantic_search_api(query: str):
-    emp_ids = semantic_search(query)
+# Dependency to get the database session
+def get_db():
     db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@router.get(
+    "/semantic-search",
+    response_model=List[EmployeeInfoResponse], # Specify the response model for automatic serialization
+    summary="Perform a semantic search for employees",
+    description="Searches for employees based on a natural language query using a semantic index and returns matching employee information."
+)
+def semantic_search_api(
+    query: str,
+    db: Session = Depends(get_db)
+) -> List[EmployeeInfoResponse]:
+    """
+    Performs a semantic search to find relevant employee IDs and then retrieves
+    the full employee information from the database.
+
+    Args:
+        query: The natural language query string for semantic search.
+        db: The database session dependency.
+
+    Returns:
+        A list of EmployeeInfo objects matching the semantic search results.
+    """
+    if not query:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Query parameter cannot be empty."
+        )
+
+    try:
+        emp_ids: List[str] = semantic_search(query) # Assuming semantic_search returns a list of IDs (e.g., strings or ints)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Semantic search failed: {e}"
+        )
+
+    if not emp_ids:
+        return [] # Return an empty list if no IDs are found by semantic search
+
+    # Fetch employee information from the database using the retrieved IDs
+    # Assuming EmployeeInfo.id is the primary key and matches the type of emp_ids
     results = db.query(EmployeeInfo).filter(EmployeeInfo.id.in_(emp_ids)).all()
+
+    # If you need to ensure the order of results matches the semantic search ranking,
+    # you might need more complex logic, but for simple retrieval, this is fine.
+    # For now, we return the results as they come from the DB query.
+
     return results
