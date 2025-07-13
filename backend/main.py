@@ -100,4 +100,5 @@ def search_employees(name: str = Query(..., min_length=1), db: Session = Depends
     results = db.query(EmployeeInfo).filter(EmployeeInfo.name.ilike(f"%{name}%")).all()
     return [serialize_employee(emp) for emp in results]
 
-uvicorn backend.main:app --reload --port 8000
+app = FastAPI()
+app.include_router(router, prefix="/employee", tags=["Employee"])
