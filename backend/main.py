@@ -1,43 +1,89 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+from datetime import datetime
+from backend import database, models
 
-from backend.database import Base, engine
-from backend.routers import auth, employee, documents, files, admin, stats, search
-import os
+router = APIRouter()
 
-# Optional: Avoid crashing build on Vercel/production when DB not ready
-try:
-    print("🗃️ Creating database tables...")
-    Base.metadata.create_all(bind=engine)
-except Exception as e:
-    print(f"⚠️ Could not create tables: {e}")
+class EmployeeCreate(BaseModel):
+    name: str
+    date_of_birth: str
+    address: str
+    contact_number: str
+    pan_number: str
+    aadhar_number: str
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="Warehouse API",
-    version="1.0.0",
-    description="API for managing warehouse employee records, documents, search, and stats."
-)
+class EmployeeUpdate(BaseModel):
+    name: str | None = None
+    date_of_birth: str | None = None
+    address: str | None = None
+    contact_number: str | None = None
+    pan_number: str | None = None
+    aadhar_number: str | None = None
 
-# Enable CORS (for frontend access)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Change to your frontend domain in production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@router.post("/", response_model=dict)
+def create_employee(data: EmployeeCreate, db: Session = Depends(database.get_db)):
+    dob = datetime.strptime(data.date_of_birth, "%Y-%m-%d").date()
+    obj = models.EmployeeInfo(
+        name=data.name,
+        date_of_birth=dob,
+        address=data.address,
+        contact_number=data.contact_number,
+        pan_number=data.pan_number,
+        aadhar_number=data.aadhar_number,
+    )
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return {"message": "Employee created", "id": obj.id}
 
-# Root health-check endpoint
-@app.get("/")
-def root():
-    return {"message": "✅ Warehouse API running"}
+@router.get("/", response_model=list)
+def list_employees(db: Session = Depends(database.get_db)):
+    return db.query(models.EmployeeInfo).all()
 
-# Include routers
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(employee.router, prefix="/employee", tags=["Employee"])
-app.include_router(documents.router, prefix="/documents", tags=["Documents"])
-app.include_router(files.router, prefix="/files", tags=["File Upload"])
-app.include_router(admin.router, prefix="/admin", tags=["Admin Panel"])
-app.include_router(stats.router, prefix="/stats", tags=["Statistics"])
-app.include_router(search.router, prefix="/search", tags=["Semantic Search"])
+@router.get("/{employee_id}", response_model=dict)
+def get_employee(employee_id: int, db: Session = Depends(database.get_db)):
+    emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return emp.__dict__
+
+@router.put("/{employee_id}", response_model=dict)
+def update_employee(employee_id: int, data: EmployeeUpdate, db: Session = Depends(database.get_db)):
+    emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    if data.name is not None:
+        emp.name = data.name
+    if data.date_of_birth is not None:
+        emp.date_of_birth = datetime.strptime(data.date_of_birth, "%Y-%m-%d").date()
+    if data.address is not None:
+        emp.address = data.address
+    if data.contact_number is not None:
+        emp.contact_number = data.contact_number
+    if data.pan_number is not None:
+        emp.pan_number = data.pan_number
+    if data.aadhar_number is not None:
+        emp.aadhar_number = data.aadhar_number
+
+    db.commit()
+    db.refresh(emp)
+    return {"message": "Employee updated", "id": emp.id}
+
+@router.delete("/{employee_id}", response_model=dict)
+def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
+    emp = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.id == employee_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    db.delete(emp)
+    db.commit()
+    return {"message": "Employee deleted", "id": employee_id}
+
+@router.get("/search/")
+def search_employees(name: str = Query(..., min_length=1), db: Session = Depends(database.get_db)):
+    results = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.name.ilike(f"%{name}%")).all()
+    return results
+
