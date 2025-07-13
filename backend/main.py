@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from backend import database, models  # Adjust import to match actual directory structure
+from backend import database, models  # Adjust this if needed based on your structure
 
 router = APIRouter()
 
@@ -87,3 +87,8 @@ def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
 def search_employees(name: str = Query(..., min_length=1), db: Session = Depends(database.get_db)):
     results = db.query(models.EmployeeInfo).filter(models.EmployeeInfo.name.ilike(f"%{name}%")).all()
     return results
+
+
+# ✅ Add FastAPI app here so this file is runnable directly
+app = FastAPI()
+app.include_router(router, prefix="/employee", tags=["Employee"])
