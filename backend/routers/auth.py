@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from backend import models, database # Assuming models includes your SQLAlchemy User model
-from backend.models.user_model import UserCreate, UserLogin, UserResponse # Pydantic models for request/response
+from backend.models.user_model import UserCreate, UserLogin # Pydantic models for request/response
 from backend.auth.auth_handler import verify_password, hash_password, create_access_token, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
