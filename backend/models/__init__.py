@@ -1,3 +1,3 @@
-from backend.database import Base
-from backend.schema_models import EmployeeInfo
+from database import Base
+from schema_models import EmployeeInfo
 __all__ = ["EmployeeInfo", "Base"]
