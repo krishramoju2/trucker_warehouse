@@ -60,14 +60,14 @@
   </div>
 
   <script>
-    fetch("/employee")
+    fetch("http://localhost:8080/employee")
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
       })
       .then(data => {
         const list = document.getElementById('empList');
-        list.innerHTML = ""; // Clear loading state
+        list.innerHTML = "";
 
         if (!data || data.length === 0) {
           list.innerHTML = `<p class="error">No employees found.</p>`;
