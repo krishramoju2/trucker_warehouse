@@ -8,7 +8,7 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post(
     "/signup", 
-    response_model=UserResponse, # Ensure the response matches the Pydantic model
+    
     status_code=status.HTTP_201_CREATED, # Standard status code for successful creation
     summary="Register a new user",
     description="Registers a new user with email, password, and an optional role. Returns the created user's details."
