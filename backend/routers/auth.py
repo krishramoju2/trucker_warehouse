@@ -77,7 +77,7 @@ def login(user: UserLogin, db: Session = Depends(database.get_db)):
     summary="Get current authenticated user info",
     description="Retrieves the details of the currently authenticated user based on the provided JWT."
 )
-def get_current_user_info(current_user: models.User = Depends(get_current_user)):
+def get_current_user_info(current_user: models.User ):
     """
     Retrieves information about the currently authenticated user.
     This route requires a valid JWT in the Authorization header (Bearer token).
@@ -90,7 +90,7 @@ def get_current_user_info(current_user: models.User = Depends(get_current_user))
     summary="Check admin status (admin-only access)",
     description="An example route that only users with 'admin' role can access."
 )
-def check_admin_status(current_user: models.User = Depends(get_current_user)):
+def check_admin_status(current_user: models.User ):
     """
     Demonstrates a route accessible only by users with the 'admin' role.
     If the authenticated user is not an admin, a 403 Forbidden error is returned.
