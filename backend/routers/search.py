@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict # Import Dict for the response model
 
 # Assuming these imports are correct based on your project structure
 from backend.utils.semantic_index import semantic_search
 from backend.database import SessionLocal
 from backend.schema_models import EmployeeInfo # This should be your SQLAlchemy model
-from backend.pydantic_models import EmployeeInfoResponse # You'll likely need a Pydantic model for responses
 
 router = APIRouter()
 
@@ -20,14 +19,14 @@ def get_db():
 
 @router.get(
     "/semantic-search",
-    response_model=List[EmployeeInfoResponse], # Specify the response model for automatic serialization
+    response_model=List[Dict], # Changed response_model to List[Dict]
     summary="Perform a semantic search for employees",
     description="Searches for employees based on a natural language query using a semantic index and returns matching employee information."
 )
 def semantic_search_api(
     query: str,
     db: Session = Depends(get_db)
-) -> List[EmployeeInfoResponse]:
+) -> List[Dict]: # Changed return type hint to List[Dict]
     """
     Performs a semantic search to find relevant employee IDs and then retrieves
     the full employee information from the database.
@@ -37,7 +36,7 @@ def semantic_search_api(
         db: The database session dependency.
 
     Returns:
-        A list of EmployeeInfo objects matching the semantic search results.
+        A list of dictionaries, each representing an employee's information.
     """
     if not query:
         raise HTTPException(
@@ -60,8 +59,20 @@ def semantic_search_api(
     # Assuming EmployeeInfo.id is the primary key and matches the type of emp_ids
     results = db.query(EmployeeInfo).filter(EmployeeInfo.id.in_(emp_ids)).all()
 
-    # If you need to ensure the order of results matches the semantic search ranking,
-    # you might need more complex logic, but for simple retrieval, this is fine.
-    # For now, we return the results as they come from the DB query.
+    # Convert SQLAlchemy ORM objects to dictionaries for the API response.
+    # IMPORTANT: You MUST adjust the keys and attributes below to match
+    # the actual column names/attributes of your 'EmployeeInfo' SQLAlchemy ORM model.
+    employee_data = []
+    for emp in results:
+        # Example attributes. Replace with your actual EmployeeInfo model's attributes.
+        employee_data.append({
+            "id": emp.id,
+            "name": emp.name if hasattr(emp, 'name') else None,
+            "email": emp.email if hasattr(emp, 'email') else None,
+            "department": emp.department if hasattr(emp, 'department') else None,
+            # Add other relevant attributes from your EmployeeInfo ORM model here, e.g.:
+            # "position": emp.position,
+            # "hire_date": str(emp.hire_date), # Convert date objects to string
+        })
 
-    return results
+    return employee_data
