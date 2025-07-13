@@ -73,7 +73,7 @@ def login(user: UserLogin, db: Session = Depends(database.get_db)):
 # Example of a protected route using get_current_user dependency
 @router.get(
     "/me", 
-    response_model=UserResponse, 
+    
     summary="Get current authenticated user info",
     description="Retrieves the details of the currently authenticated user based on the provided JWT."
 )
