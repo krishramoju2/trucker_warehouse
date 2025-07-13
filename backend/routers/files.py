@@ -1,12 +1,11 @@
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, status, File
 from sqlalchemy.orm import Session
 from backend.database import get_db
-# Removed: from backend.services.file_service import get_file_service, FileService
-from backend.models import file_model # Pydantic models
-# Assuming your SQLAlchemy ORM model for File is accessible via file_model.File
+# Assuming your SQLAlchemy ORM model for File is now accessible directly from backend.database
 # If your ORM model is in a different location (e.g., backend.database.models),
-# you would adjust this import accordingly.
-from backend.models.file_model import File as FileORM # Assuming ORM model is named File within file_model module
+# you would adjust this import accordingly, but the request was to avoid inventing new modules.
+from backend.database import File as FileORM # Changed import for ORM model
+from backend.models import file_model # Pydantic models (still needed for request/response schemas)
 
 from backend.utils.virus_scan import scan_file
 from fastapi.responses import FileResponse
@@ -201,4 +200,3 @@ def delete_file(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to delete file: {e}"
         )
-
