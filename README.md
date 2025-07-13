@@ -7,7 +7,8 @@ sudo apt update && sudo apt install -y libtiff-dev libjpeg-dev zlib1g-dev libfre
 
 python create_tables.py
 
-python -m uvicorn main:app --reload --port 8000
+uvicorn backend.main:app --reload --port 8000
+
 
 
 
