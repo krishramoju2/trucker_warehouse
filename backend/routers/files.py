@@ -1,11 +1,19 @@
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, status, File
 from sqlalchemy.orm import Session
 from backend.database import get_db
-# Assuming your SQLAlchemy ORM model for File is now accessible directly from backend.database
-# If your ORM model is in a different location (e.g., backend.database.models),
-# you would adjust this import accordingly, but the request was to avoid inventing new modules.
-from backend.database import File as FileORM # Changed import for ORM model
-from backend.models import file_model # Pydantic models (still needed for request/response schemas)
+
+# IMPORTANT: The SQLAlchemy ORM 'File' model is currently not imported.
+# Based on your instructions, it's not in 'backend.models.file_model'
+# nor 'backend.database', and no new modules can be invented.
+# You MUST ensure the 'File' ORM model is accessible in this scope,
+# or this code will result in a 'NameError' when trying to use 'FileORM'.
+# For example, if it's defined directly in 'backend.database' but under a different name,
+# or in another existing module not yet specified, you'll need to add that import.
+# Example (if it were in 'backend.some_other_module'):
+# from backend.some_other_module import File as FileORM
+
+# Pydantic models for request/response schemas are still imported from file_model
+from backend.models import file_model
 
 from backend.utils.virus_scan import scan_file
 from fastapi.responses import FileResponse
@@ -13,8 +21,7 @@ import shutil
 import os
 import uuid
 import logging
-from typing import Annotated # For Python 3.9+ for clearer dependency injection
-# from backend.auth.auth_handler import get_current_user # Uncomment if you have auth
+from typing import Annotated
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +74,7 @@ async def upload_file(
         is_clean = scan_file(file_path)
 
         # Create a new File ORM object and add it to the database session
+        # This line will cause a NameError if FileORM is not defined or imported elsewhere.
         db_file_orm = FileORM(
             path=file_path,
             original_filename=file.filename,
@@ -125,6 +133,7 @@ def get_file_meta(
     Retrieves metadata for a specific file from the database.
     """
     # Query the database for the file metadata by ID
+    # This line will cause a NameError if FileORM is not defined or imported elsewhere.
     file_metadata = db.query(FileORM).filter(FileORM.id == file_id).first()
     if not file_metadata:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File metadata not found")
@@ -146,6 +155,7 @@ def download_file(
     - Checks if the file exists in the database and on disk.
     """
     # Query the database for the file metadata by ID
+    # This line will cause a NameError if FileORM is not defined or imported elsewhere.
     file_metadata = db.query(FileORM).filter(FileORM.id == file_id).first()
     if not file_metadata:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File metadata not found")
@@ -172,6 +182,7 @@ def delete_file(
     Deletes a file (metadata and physical file) by its ID.
     """
     # Find the file metadata in the database
+    # This line will cause a NameError if FileORM is not defined or imported elsewhere.
     file_to_delete = db.query(FileORM).filter(FileORM.id == file_id).first()
 
     if not file_to_delete:
