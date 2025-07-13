@@ -23,7 +23,7 @@ class EmployeeUpdate(BaseModel):
     pan_number: str | None = None
     aadhar_number: str | None = None
 
-def serialize_employee(emp: models.EmployeeInfo) -> dict:
+def serialize_employee(emp: schema_models.EmployeeInfo) -> dict:
     return {
         "id": emp.id,
         "name": emp.name,
