@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
 from backend.database import engine, Base, get_db
-from backend.routers import auth_router
+from backend.routers import admin_router
 
 # Create all database tables
 Base.metadata.create_all(bind=engine)
@@ -13,7 +13,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-app.include_router(auth_router.router)
+app.include_router(admin_router.router)
 
 @app.get("/")
 def read_root():
