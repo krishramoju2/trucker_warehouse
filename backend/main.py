@@ -48,7 +48,12 @@ def create_employee(data: EmployeeCreate, db: Session = Depends(database.get_db)
     db.add(obj)
     db.commit()
     db.refresh(obj)
-    return {"message": "Employee created", "id": obj.id}
+    try:
+        return {"message": "Employee created", "id": obj.id}
+    except Exception as e:
+        print("❌ ERROR:", str(e))
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 
 @router.get("/", response_model=list)
 def list_employees(db: Session = Depends(database.get_db)):
