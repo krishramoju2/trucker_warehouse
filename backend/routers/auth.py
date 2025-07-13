@@ -8,11 +8,10 @@ from backend import database
 
 # Import only the necessary models from your user_model file.
 # We will use UserRole as the SQLAlchemy ORM model, and UserCreate/UserLogin for Pydantic input.
-# As per your instruction, we are avoiding 'User' and 'UserResponse'.
 from backend.models.user_model import UserCreate, UserLogin, UserRole # UserRole is the SQLAlchemy ORM model
 
 # Assuming your authentication logic is here
-from backend.auth.auth_handler import verify_password, hash_password, create_access_token, get_current_user
+from backend.auth.auth_handler import verify_password, hash_password, create_access_token
 
 # --- Pydantic Model for API Response ---
 # Since you want to avoid 'UserResponse' and expose only 'email' and 'role',
@@ -96,40 +95,3 @@ def login(user: UserLogin, db: Session = Depends(database.get_db)):
     token = create_access_token(data={"sub": db_user.email, "role": db_user.role})
 
     return {"access_token": token, "token_type": "bearer"}
-
-
-@router.get(
-    "/me",
-    response_model=UserOut, # Specify UserOut as the response model
-    summary="Get current authenticated user info",
-    description="Retrieves the details (email and role) of the currently authenticated user based on the provided JWT."
-)
-# The get_current_user dependency is assumed to return a dictionary
-# containing 'email' and 'role' for the authenticated user.
-def get_current_user_info(current_user: dict = Depends(get_current_user)):
-    """
-    Retrieves information about the currently authenticated user.
-    This route requires a valid JWT in the Authorization header (Bearer token).
-    """
-    # Convert the dictionary returned by get_current_user into a UserOut Pydantic model
-    return UserOut(**current_user)
-
-@router.get(
-    "/admin-status",
-    summary="Check admin status (admin-only access)",
-    description="An example route that only users with 'admin' role can access."
-)
-# The get_current_user dependency is assumed to return a dictionary
-# containing 'email' and 'role' for the authenticated user.
-def check_admin_status(current_user: dict = Depends(get_current_user)):
-    """
-    Demonstrates a route accessible only by users with the 'admin' role.
-    If the authenticated user is not an admin, a 403 Forbidden error is returned.
-    """
-    # Access the 'role' from the dictionary returned by get_current_user
-    if current_user.get("role") != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized. Admin privileges required."
-        )
-    return {"message": f"Welcome, admin {current_user.get('email')}! You have access to administrative features."}
