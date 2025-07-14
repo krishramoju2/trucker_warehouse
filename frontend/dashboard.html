@@ -45,23 +45,46 @@
       width: 0%;
       transition: width 0.6s ease;
     }
+
+    .note {
+      margin-top: 2rem;
+      background: #fff3cd;
+      padding: 15px;
+      border-left: 6px solid #ffc107;
+      border-radius: 8px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .note strong {
+      color: #b35a00;
+    }
   </style>
 </head>
 <body>
   <h2>📊 Warehouse Dashboard</h2>
 
   <div class="stat-box">
-    <div class="label">Total Employees: <span id="empCount">0</span></div>
+    <div class="label">Total Truckers Registered: <span id="empCount">0</span></div>
     <div class="bar-container">
       <div id="empBar" class="bar"></div>
     </div>
   </div>
 
   <div class="stat-box">
-    <div class="label">Total Documents Uploaded: <span id="docCount">0</span></div>
+    <div class="label">Total Trucking Documents Uploaded: <span id="docCount">0</span></div>
     <div class="bar-container">
       <div id="docBar" class="bar"></div>
     </div>
+  </div>
+
+  <div class="note">
+    🚛 <strong>Did you know?</strong> The average trucker in India covers over <strong>4000 km per week</strong>, making it essential to keep their compliance docs up-to-date.<br>
+    📁 Ensure all trucking personnel upload documents like <strong>vehicle fitness certificates</strong>, <strong>road permits</strong>, and <strong>driver medical records</strong> along with standard PAN/Aadhar paperwork.<br>
+    🛣️ Smooth logistics = smoother highways.
   </div>
 
   <script>
@@ -93,3 +116,4 @@
   </script>
 </body>
 </html>
+
