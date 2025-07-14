@@ -7,13 +7,13 @@ from sqlalchemy.exc import OperationalError
 # 🔧 Database Configuration
 # ---------------------------
 
-# Default fallback URL
+# Default PostgreSQL connection string
 DEFAULT_DB_URL = "postgresql://postgres:postgres@localhost:5432/warehouse_db"
 
-# Use env var DATABASE_URL or fallback to local
+# Get URL from environment or fallback to default
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB_URL)
 
-# Optional: Print for debug (remove in production)
+# Optional: Log DB URL (hide password in production!)
 print(f"📡 Connecting to database: {DATABASE_URL}")
 
 # ---------------------------
@@ -25,7 +25,10 @@ try:
 except OperationalError as e:
     raise RuntimeError(f"❌ Failed to connect to database: {e}")
 
+# Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Base class for all models
 Base = declarative_base()
 
 # ---------------------------
@@ -33,6 +36,10 @@ Base = declarative_base()
 # ---------------------------
 
 def get_db() -> Session:
+    """
+    Dependency that provides a database session for FastAPI routes.
+    Used via Depends(get_db) in your routes to auto-handle session closing.
+    """
     db = SessionLocal()
     try:
         yield db
