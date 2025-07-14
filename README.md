@@ -1,3 +1,5 @@
+i want you to just add things about truckers in andaround whatever is curently existing so jus add inn a bit and resend completet coded 
+
 pip install -r requirements.txt 
 
 docker-compose up -d
