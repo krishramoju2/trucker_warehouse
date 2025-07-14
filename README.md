@@ -1,4 +1,4 @@
-i want you to just add things about truckers in andaround whatever is curently existing so jus add inn a bit and resend completet coded 
+Here is your updated and complete HTML code with random trucker-related info sprinkled throughout the existing code 
 
 pip install -r requirements.txt 
 
