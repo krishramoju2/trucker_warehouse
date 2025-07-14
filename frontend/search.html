@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <title>Live Employee Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,6 +20,8 @@
       padding: 0.5rem;
       width: 300px;
       margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
     ul {
       list-style: none;
@@ -31,8 +37,8 @@
   </style>
 </head>
 <body>
-  <h2>Search Employees</h2>
-  <input type="text" id="searchInput" placeholder="Search by name..." />
+  <h2>🔎 Search Employee by ID</h2>
+  <input type="number" id="searchInput" placeholder="Enter Employee ID..." />
 
   <ul id="resultsList"></ul>
 
@@ -43,24 +49,30 @@
     input.addEventListener('input', async () => {
       const query = input.value.trim();
       resultsList.innerHTML = '';
+
       if (query === '') return;
 
-      const response = await fetch(`http://localhost:8080/employee/search?name=${query}`);
-      const results = await response.json();
+      try {
+        const response = await fetch(`http://localhost:8080/employee/${query}`);
+        if (!response.ok) {
+          const li = document.createElement('li');
+          li.textContent = "No matching employee found.";
+          resultsList.appendChild(li);
+          return;
+        }
 
-      if (results.length === 0) {
+        const emp = await response.json();
         const li = document.createElement('li');
-        li.textContent = "No matching employees found.";
+        li.textContent = `ID: ${emp.id} | Name: ${emp.name} | DOB: ${emp.date_of_birth} | Contact: ${emp.contact_number} | Address: ${emp.address} | PAN: ${emp.pan_number} | Aadhar: ${emp.aadhar_number}`;
         resultsList.appendChild(li);
-        return;
+      } catch (err) {
+        const li = document.createElement('li');
+        li.textContent = "Error fetching employee.";
+        resultsList.appendChild(li);
+        console.error(err);
       }
-
-      results.forEach(emp => {
-        const li = document.createElement('li');
-        li.textContent = `ID: ${emp.id} | Name: ${emp.name} | Contact: ${emp.contact_number}`;
-        resultsList.appendChild(li);
-      });
     });
   </script>
 </body>
 </html>
+
