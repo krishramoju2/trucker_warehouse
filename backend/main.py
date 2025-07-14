@@ -9,29 +9,29 @@ router = APIRouter()
 
 class EmployeeCreate(BaseModel):
     name: str
-    date_of_birth: str
+    dob: str
     address: str
-    contact_number: str
-    pan_number: str
-    aadhar_number: str
+    contact: str
+    pan: str
+    aadhar: str
 
 class EmployeeUpdate(BaseModel):
     name: str | None = None
-    date_of_birth: str | None = None
+    dob: str | None = None
     address: str | None = None
-    contact_number: str | None = None
-    pan_number: str | None = None
-    aadhar_number: str | None = None
+    contact: str | None = None
+    pan: str | None = None
+    aadhar: str | None = None
 
 def serialize_employee(emp: EmployeeInfo) -> dict:
     return {
-        "id": emp.id,
-        "name": emp.name,
-        "date_of_birth": emp.date_of_birth.isoformat() if emp.date_of_birth else None,
-        "address": emp.address,
-        "contact_number": emp.contact_number,
-        "pan_number": emp.pan_number,
-        "aadhar_number": emp.aadhar_number,
+        
+        "Trucker Name": emp.name,
+        "date_of_birth": emp.dob.isoformat() if emp.dob else None,
+        "Home Address": emp.address,
+        "contact_number": emp.contact,
+        "Driving License Number": emp.pan,
+        "aadhar_number": emp.aadhar,
     }
 
 @router.post("/", response_model=dict)
@@ -41,9 +41,9 @@ def create_employee(data: EmployeeCreate, db: Session = Depends(database.get_db)
         name=data.name,
         date_of_birth=dob,
         address=data.address,
-        contact_number=data.contact_number,
-        pan_number=data.pan_number,
-        aadhar_number=data.aadhar_number,
+        contact_number=data.contact,
+        pan_number=data.pan,
+        aadhar_number=data.aadhar,
     )
     db.add(obj)
     db.commit()
@@ -79,12 +79,12 @@ def update_employee(employee_id: int, data: EmployeeUpdate, db: Session = Depend
         emp.date_of_birth = datetime.strptime(data.date_of_birth, "%Y-%m-%d").date()
     if data.address is not None:
         emp.address = data.address
-    if data.contact_number is not None:
-        emp.contact_number = data.contact_number
+    if data.contact is not None:
+        emp.contact = data.contact
     if data.pan_number is not None:
-        emp.pan_number = data.pan_number
-    if data.aadhar_number is not None:
-        emp.aadhar_number = data.aadhar_number
+        emp.pan = data.pan
+    if data.aadhar is not None:
+        emp.aadhar = data
 
     db.commit()
     db.refresh(emp)
