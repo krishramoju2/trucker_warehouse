@@ -3,42 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; padding: 20px; background: #f8f9fa; }
-    h2 { color: #333; }
-    .stat-box { background: white; padding: 20px; margin: 10px 0; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    .bar-container { background: #eee; width: 100%; border-radius: 4px; overflow: hidden; }
-    .bar { height: 20px; background: #007bff; width: 0%; transition: width 0.6s ease; }
-    .label { margin-bottom: 5px; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .stat-box {
+      background: #fff;
+      padding: 20px;
+      margin: 15px auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+    }
+
+    .label {
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .bar-container {
+      background: #e0e0e0;
+      height: 22px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      background: #007bff;
+      width: 0%;
+      transition: width 0.6s ease;
+    }
   </style>
 </head>
 <body>
-  <h2>Warehouse Dashboard</h2>
+  <h2>📊 Warehouse Dashboard</h2>
+
   <div class="stat-box">
-    <div class="label">Total Employees: <span id="empCount"></span></div>
-    <div class="bar-container"><div id="empBar" class="bar"></div></div>
+    <div class="label">Total Employees: <span id="empCount">0</span></div>
+    <div class="bar-container">
+      <div id="empBar" class="bar"></div>
+    </div>
   </div>
+
   <div class="stat-box">
-    <div class="label">Total Documents Uploaded: <span id="docCount"></span></div>
-    <div class="bar-container"><div id="docBar" class="bar"></div></div>
+    <div class="label">Total Documents Uploaded: <span id="docCount">0</span></div>
+    <div class="bar-container">
+      <div id="docBar" class="bar"></div>
+    </div>
   </div>
 
   <script>
     async function loadStats() {
-      const empRes = await fetch('http://localhost:8080/stats/employees');
-      const docRes = await fetch('http://localhost:8080/stats/documents');
-      const empData = await empRes.json();
-      const docData = await docRes.json();
+      try {
+        const empRes = await fetch('http://localhost:8080/stats/employees');
+        const docRes = await fetch('http://localhost:8080/stats/documents');
 
-      const empCount = empData.count;
-      const docCount = docData.count;
+        if (!empRes.ok || !docRes.ok) throw new Error("Failed to fetch stats");
 
-      document.getElementById('empCount').innerText = empCount;
-      document.getElementById('docCount').innerText = docCount;
+        const empData = await empRes.json();
+        const docData = await docRes.json();
 
-      document.getElementById('empBar').style.width = Math.min(empCount * 10, 100) + "%";
-      document.getElementById('docBar').style.width = Math.min(docCount * 10, 100) + "%";
+        const empCount = empData.count || 0;
+        const docCount = docData.count || 0;
+
+        document.getElementById('empCount').innerText = empCount;
+        document.getElementById('docCount').innerText = docCount;
+
+        document.getElementById('empBar').style.width = Math.min(empCount * 10, 100) + "%";
+        document.getElementById('docBar').style.width = Math.min(docCount * 10, 100) + "%";
+      } catch (error) {
+        alert("❌ Could not load dashboard stats.");
+        console.error("Dashboard Load Error:", error);
+      }
     }
+
     loadStats();
   </script>
 </body>
