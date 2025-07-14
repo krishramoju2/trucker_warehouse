@@ -1,7 +1,6 @@
-// 🚀 Submit new employee form
+// ✅ Register Employee
 async function submitEmployeeForm(event) {
   event.preventDefault();
-
   const submitBtn = document.getElementById("submitEmployeeBtn");
   submitBtn.disabled = true;
 
@@ -38,10 +37,9 @@ async function submitEmployeeForm(event) {
 
 document.getElementById("registerForm")?.addEventListener("submit", submitEmployeeForm);
 
-// 📁 Upload employee documents
+// 📁 Upload Documents
 async function uploadDocuments(event) {
   event.preventDefault();
-
   const uploadBtn = document.getElementById("uploadBtn");
   uploadBtn.disabled = true;
 
@@ -76,4 +74,67 @@ async function uploadDocuments(event) {
 }
 
 document.getElementById("uploadForm")?.addEventListener("submit", uploadDocuments);
+
+// 🔍 Search Employee by ID
+document.getElementById("searchInput")?.addEventListener("input", async (e) => {
+  const query = e.target.value.trim();
+  const resultsList = document.getElementById("resultsList");
+  resultsList.innerHTML = '';
+
+  if (query === '') return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/employee/${query}`);
+    if (!response.ok) {
+      const li = document.createElement('li');
+      li.textContent = "No matching employee found.";
+      resultsList.appendChild(li);
+      return;
+    }
+
+    const emp = await response.json();
+    const li = document.createElement('li');
+    li.textContent = `ID: ${emp.id} | Name: ${emp.name} | DOB: ${emp.date_of_birth} | Contact: ${emp.contact_number} | Address: ${emp.address} | PAN: ${emp.pan_number} | Aadhar: ${emp.aadhar_number}`;
+    resultsList.appendChild(li);
+  } catch (err) {
+    const li = document.createElement('li');
+    li.textContent = "Error fetching employee.";
+    resultsList.appendChild(li);
+    console.error(err);
+  }
+});
+
+// 📊 Load Dashboard Stats
+async function loadStats() {
+  const empCountEl = document.getElementById("empCount");
+  const docCountEl = document.getElementById("docCount");
+  const empBar = document.getElementById("empBar");
+  const docBar = document.getElementById("docBar");
+
+  if (!empCountEl || !docCountEl || !empBar || !docBar) return;
+
+  try {
+    const empRes = await fetch('http://localhost:8080/stats/employees');
+    const docRes = await fetch('http://localhost:8080/stats/documents');
+
+    if (!empRes.ok || !docRes.ok) throw new Error("Failed to fetch stats");
+
+    const empData = await empRes.json();
+    const docData = await docRes.json();
+
+    const empCount = empData.count || 0;
+    const docCount = docData.count || 0;
+
+    empCountEl.innerText = empCount;
+    docCountEl.innerText = docCount;
+
+    empBar.style.width = Math.min(empCount * 10, 100) + "%";
+    docBar.style.width = Math.min(docCount * 10, 100) + "%";
+  } catch (err) {
+    console.error("Dashboard Load Error:", err);
+    alert("❌ Could not load dashboard stats.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadStats);
 
