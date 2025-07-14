@@ -105,5 +105,44 @@ def search_employees(name: str = Query(..., min_length=1), db: Session = Depends
     results = db.query(EmployeeInfo).filter(EmployeeInfo.name.ilike(f"%{name}%")).all()
     return [serialize_employee(emp) for emp in results]
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+import os
+
 app = FastAPI()
 app.include_router(router, prefix="/employee", tags=["Employee"])
+
+# 👇 Mount frontend folder
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+# 👇 HTML page routes (register.html, view.html, upload.html, dashboard.html, search.html)
+@app.get("/", response_class=HTMLResponse)
+def index():
+    with open("frontend/register.html") as f:
+        return f.read()
+
+@app.get("/register", response_class=HTMLResponse)
+def register():
+    with open("frontend/register.html") as f:
+        return f.read()
+
+@app.get("/employees", response_class=HTMLResponse)
+def list_view():
+    with open("frontend/view.html") as f:
+        return f.read()
+
+@app.get("/upload", response_class=HTMLResponse)
+def upload():
+    with open("frontend/upload.html") as f:
+        return f.read()
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    with open("frontend/dashboard.html") as f:
+        return f.read()
+
+@app.get("/search", response_class=HTMLResponse)
+def search():
+    with open("frontend/search.html") as f:
+        return f.read()
+
