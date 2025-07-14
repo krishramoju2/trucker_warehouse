@@ -1,46 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <meta charset="UTF-8">
-  <title>Live Employee Search</title>
+  <title>🚛 Trucker ID Search</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 2rem;
-      background-color: #f0f0f0;
+      background-color: #f4f4f4;
     }
     h2 {
-      color: #333;
+      color: #2c3e50;
+      text-align: center;
     }
     input {
       padding: 0.5rem;
-      width: 300px;
-      margin-bottom: 1rem;
+      width: 320px;
+      margin: 1rem auto;
+      display: block;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
     ul {
       list-style: none;
       padding: 0;
+      margin-top: 1rem;
     }
     li {
       background: #fff;
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .note {
+      background: #e8f0fe;
+      padding: 1rem;
+      border-left: 5px solid #4285f4;
+      margin-top: 2rem;
+      font-size: 0.9rem;
       border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <h2>🔎 Search Employee by ID</h2>
-  <input type="number" id="searchInput" placeholder="Enter Employee ID..." />
+  <h2>🔎 Search Trucker by Driver ID</h2>
+  <input type="number" id="searchInput" placeholder="Enter Driver ID..." />
 
   <ul id="resultsList"></ul>
+
+  <div class="note">
+    🛻 <strong>Did you know?</strong> Truckers often carry over <strong>15+ official documents</strong> including <em>route permits</em>, <em>fitness certificates</em>, and <em>load clearance forms</em> alongside personal ID.<br>
+    📦 Make sure each registered trucker has their <strong>PAN, Aadhar, and emergency contact</strong> verified in the system.
+  </div>
 
   <script>
     const input = document.getElementById('searchInput');
@@ -56,18 +69,26 @@
         const response = await fetch(`http://localhost:8080/employee/${query}`);
         if (!response.ok) {
           const li = document.createElement('li');
-          li.textContent = "No matching employee found.";
+          li.textContent = "No matching trucker found for this Driver ID.";
           resultsList.appendChild(li);
           return;
         }
 
         const emp = await response.json();
         const li = document.createElement('li');
-        li.textContent = `ID: ${emp.id} | Name: ${emp.name} | DOB: ${emp.date_of_birth} | Contact: ${emp.contact_number} | Address: ${emp.address} | PAN: ${emp.pan_number} | Aadhar: ${emp.aadhar_number}`;
+        li.innerHTML = `
+          <strong>🚚 Driver ID:</strong> ${emp.id}<br>
+          <strong>Name:</strong> ${emp.name}<br>
+          <strong>Date of Birth:</strong> ${emp.date_of_birth}<br>
+          <strong>📞 Contact:</strong> ${emp.contact_number}<br>
+          <strong>🏠 Base Location:</strong> ${emp.address}<br>
+          <strong>🧾 PAN:</strong> ${emp.pan_number}<br>
+          <strong>🪪 Aadhar:</strong> ${emp.aadhar_number}
+        `;
         resultsList.appendChild(li);
       } catch (err) {
         const li = document.createElement('li');
-        li.textContent = "Error fetching employee.";
+        li.textContent = "Error fetching trucker data. Please try again.";
         resultsList.appendChild(li);
         console.error(err);
       }
@@ -75,4 +96,3 @@
   </script>
 </body>
 </html>
-
