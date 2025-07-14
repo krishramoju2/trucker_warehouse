@@ -25,7 +25,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       backdrop-filter: blur(10px);
       width: 100%;
-      max-width: 450px;
+      max-width: 470px;
     }
 
     h2 {
@@ -60,13 +60,26 @@
     form button:hover {
       background-color: #002e5f;
     }
+
+    .note {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      color: #ffe9a7;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .highlight {
+      color: #ffd700;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="form-container">
-    <h2>Upload Documents</h2>
+    <h2>🚛 Upload Trucker Documents</h2>
     <form id="uploadForm" enctype="multipart/form-data">
-      <input type="number" placeholder="Employee ID" name="empid" id="empid" required>
+      <input type="number" placeholder="Trucker/Employee ID" name="empid" id="empid" required>
       <input type="file" name="resume" id="resume" required>
       <input type="file" name="educational_certificates" id="certs" required>
       <input type="file" name="offer_letters" id="offer" required>
@@ -75,6 +88,15 @@
       <input type="file" name="form_16_or_it_returns" id="form16" required>
       <button type="submit" id="uploadBtn">Upload</button>
     </form>
+
+    <div class="note">
+      📌 <span class="highlight">Truckers:</span> Please ensure your <strong>vehicle registration papers</strong> and <strong>commercial driving license</strong> are included in the document scans.<br>
+      🛠 Regularly updated <strong>fitness certificates</strong> and <strong>logbooks</strong> help speed up verification.
+    </div>
+
+    <div class="note">
+      🚚 Fun Fact: Long-haul truckers in India average over <span class="highlight">4000 km</span> of highway every week. Document compliance helps keep them moving smoothly!
+    </div>
   </div>
 
   <script src="script.js"></script>
