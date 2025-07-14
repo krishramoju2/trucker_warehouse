@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📦 Warehouse Dashboard</title>
+  <title>📦 Warehouse & Trucker Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -66,6 +66,23 @@
       font-size: 0.95rem;
     }
 
+    .trucker-note {
+      margin-top: 3rem;
+      background: #fff9db;
+      padding: 1rem;
+      border-radius: 10px;
+      color: #5f370e;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .fun-fact {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      color: #4a5568;
+      font-style: italic;
+    }
+
     @media (max-width: 600px) {
       .container {
         padding: 1rem;
@@ -79,32 +96,41 @@
 </head>
 <body>
   <div class="container">
-    <h1>📦 Warehouse Management Dashboard</h1>
-    <p class="subtitle">Manage employee data and documents efficiently</p>
+    <h1>🚛📦 Warehouse & Trucker Management Dashboard</h1>
+    <p class="subtitle">Manage employee data, trucker profiles, and critical logistics documents efficiently</p>
 
     <div class="card-container">
       <a href="register.html" class="card">
         <h2>👤 Register Employee</h2>
-        <p>Add new employee details securely.</p>
+        <p>Add new employee or trucker details securely. Ensure driver license & truck ID are uploaded.</p>
       </a>
       <a href="upload.html" class="card">
         <h2>📄 Upload Documents</h2>
-        <p>Submit and verify official documents.</p>
+        <p>Submit and verify official documents – includes truck inspection reports & cargo papers.</p>
       </a>
       <a href="employees.html" class="card">
         <h2>📋 View Employees</h2>
-        <p>Browse all registered personnel.</p>
+        <p>Browse all registered warehouse workers and assigned truckers across shifts.</p>
       </a>
       <a href="dashboard.html" class="card">
         <h2>📊 Dashboard</h2>
-        <p>Visualize employee & upload statistics.</p>
+        <p>Visualize employee/trucker counts and document uploads for compliance tracking.</p>
       </a>
       <a href="search.html" class="card">
         <h2>🔍 Live Search</h2>
-        <p>Quickly find employees on the go.</p>
+        <p>Quickly find truckers by license or employees by ID – streamline routing!</p>
       </a>
+    </div>
+
+    <div class="trucker-note">
+      🚨 <strong>Note:</strong> Truckers must submit their vehicle logbook and maintain on-time check-in/out logs. Use the document upload section for compliance.
+    </div>
+
+    <div class="fun-fact">
+      🚛 Did you know? A single trucker in India can travel over 90,000 km per year – almost twice around the Earth!
     </div>
   </div>
 </body>
 </html>
+
 
